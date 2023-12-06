@@ -1,9 +1,50 @@
 import { useState } from "react";
 import { NumberButton } from "./NumberButton";
 import { OperatorButton } from "./OperatorButton";
+import { FuncButton } from "./FunctionButton";
 
 export const Calculator = () => {
   const [calculatedValue, setCalculatedValue] = useState("0");
+  const [selectedOperator, setSelectedOperator] = useState("");
+
+  const resetOperator = () => {
+    setSelectedOperator("");
+  };
+
+  const calculate = () => {
+    setCalculatedValue(eval(calculatedValue).toString());
+    resetOperator();
+  };
+
+  const del = () => {
+    if (calculatedValue === "0") return;
+    if (calculatedValue.length === 1) setCalculatedValue("0");
+    else {
+      setCalculatedValue(
+        calculatedValue.substring(0, calculatedValue.length - 1)
+      );
+    }
+  };
+
+  const clear = () => {
+    setCalculatedValue("0");
+    resetOperator();
+  };
+
+  const handleOperatorButtonClick = (operator: string) => {
+    if (calculatedValue === "0") {
+      return;
+    }
+    if (selectedOperator != "") {
+      setCalculatedValue(
+        calculatedValue.slice(0, calculatedValue.length - 1) + operator
+      );
+    } else {
+      setCalculatedValue(calculatedValue + operator);
+    }
+    setSelectedOperator(operator);
+  };
+
   const handleNumberButtonClick = (number: string) => {
     if (
       calculatedValue === "0" &&
@@ -31,6 +72,7 @@ export const Calculator = () => {
             display: "flex",
             flex: 1,
             flexWrap: "wrap",
+            justifyContent: "space-between",
             alignItems: "stretch",
           }}
         >
@@ -62,12 +104,25 @@ export const Calculator = () => {
           className="operatorPad"
           style={{ display: "flex", flexDirection: "column" }}
         >
-          <OperatorButton operator="+" />
-          <OperatorButton operator="-" />
-          <OperatorButton operator="*" />
-          <OperatorButton operator="/" />
-          <OperatorButton operator="=" />
-          <OperatorButton operator="<" />
+          <OperatorButton
+            operator="+"
+            onOperatorClick={handleOperatorButtonClick}
+          />
+          <OperatorButton
+            operator="-"
+            onOperatorClick={handleOperatorButtonClick}
+          />
+          <OperatorButton
+            operator="*"
+            onOperatorClick={handleOperatorButtonClick}
+          />
+          <OperatorButton
+            operator="/"
+            onOperatorClick={handleOperatorButtonClick}
+          />
+          <FuncButton func="<" onFuncClick={del} />
+          <FuncButton func="=" onFuncClick={calculate} />
+          <FuncButton func="C" onFuncClick={clear} />
         </div>
       </div>
       <div>
